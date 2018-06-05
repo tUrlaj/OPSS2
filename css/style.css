@@ -1,0 +1,22 @@
+html {
+    display: block;
+	padding: 0px;
+	margin: 0px;
+}
+
+body {
+	padding: 0px;
+	margin: 0px;
+}
+
+canvas {
+	background-color: #f1f1f1;
+}
+
+//usunięcie scrolli dla fullscreen w/h 100% canvas
+::-webkit-scrollbar {
+	width: 0 !important;
+	opacity: 0 !important;
+} * {
+	overflow: hidden !important;
+}
