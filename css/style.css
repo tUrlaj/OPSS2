@@ -22,6 +22,14 @@ canvas {
 	text-align: center;
 }
 
+#scoreboard-win {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	display: none;
+	text-align: center;
+}
+
 #status {
 	position: absolute;
     text-align: center;
