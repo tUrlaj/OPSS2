@@ -1,48 +1,73 @@
-var KontenerGry;
-var MalyProblem;
-var myBackground;
+/* Zmienne globalne */
+var myJumpGameSection;
+var myObstacles = [];
+var myHitSound;
+var myBackgroundMusic;
 
-function RozpoczecieGry() 
+/* Wczytywanie nowej gry po przegranej */
+function restartJumpGame() 
 {
-	KontenerGry = new component(128, 128, "img/char.gif", 50, 240, "image");
-	myBackground = new component(1280, 1000, "img/bg.jpg", 0, 0, "image");
-	MalyProblem = new component(10, 200, "black", 300, 120); //utworzenie przeszkody
-    ArenaRozgrywki.start();
+	document.getElementById("scoreboard").style.display = "none";
+	myJumpGameArea.stop();
+	myJumpGameArea.clear();
+	myJumpGameArea = {};
+	myJumpGameSection = {};
+	myObstacles = [];
+	myHitSound = {};
+	myBackgroundMusic = {};
+	document.getElementById("canvasUnit").innerHTML = "";
+	startJumpGame()
 }
-var ArenaRozgrywki = 
+
+/* Deklaracje obiektów */
+function startJumpGame() 
 {
-    canvas : document.createElement("canvas"),
-    start : function() 
+	myJumpGameArea = new gameArea();
+	myJumpGameSection = new component(64, 64, "img/char.gif", 50, 240, "image");
+	myHitSound = new sound("sounds/hitObstacle.mp3");
+	myBackgroundMusic = new sound("sounds/relaxingBackgroundMusic.mp3");
+    myBackgroundMusic.play();
+    myJumpGameArea.start();
+}
+
+/* Okno Canvas, Animacja (płynność, klatki), Sterowanie */
+function gameArea() 
+{
+    this.canvas = document.createElement("canvas");
+    this.canvas.width = window.innerWidth; //dostosowanie do fullscreen
+    this.canvas.height = window.innerHeight; //dostosowanie do fullscreen    
+    document.getElementById("canvasUnit").appendChild(this.canvas);
+    this.context = this.canvas.getContext("2d");
+    this.pause = false;
+    this.frameNumber = 0;
+    this.start = function() 
 	{
-        this.canvas.width = window.innerWidth; //dostosowanie do fullscreen
-        this.canvas.height = window.innerHeight; //dostosowanie do fullscreen
-        this.context = this.canvas.getContext("2d");
-		//this.canvas.style.backgroundImage = "url('img/bg.jpg')";
-        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
-        this.interval = setInterval(AktualizacjaArenyRozgrywki, 20);
-        window.addEventListener('keydown', function (e) 
+        this.interval = setInterval(updateGameArea, 20); //ilość klatek
+		window.addEventListener('keydown', function (e) //sterowanie za pomocą klawiatury
 		{
-            ArenaRozgrywki.key = e.keyCode;
+            myJumpGameArea.key = e.keyCode;
         })
 		window.addEventListener('keyup', function (e) 
 		{
-            ArenaRozgrywki.key = false;
+            myJumpGameArea.key = false;
         })
-    }, 
-	stop : function() 
+    },
+    this.stop = function() 
 	{
         clearInterval(this.interval);
-    },    
-    clear : function()
+        this.pause = true;
+    }
+    this.clear = function()
 	{
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 }
-//tworzenie elementów gry
+
+/* Tworzenie elementów składowych gry */
 function component(width, height, color, x, y, type) 
 {
     this.type = type;
-	if (type == "image") 
+	if (type == "image") //mozliwość dodania skórek elementów
 	{
 		this.image = new Image();
 		this.image.src = color;
@@ -55,14 +80,18 @@ function component(width, height, color, x, y, type)
     this.speedY = 0;    
     this.gravity = 0.1;
     this.gravitySpeed = 0.1;
-	this.update = function() {
-        ctx = ArenaRozgrywki.context;
-        if (type == "image") {
+	this.update = function() 
+	{
+        ctx = myJumpGameArea.context;
+        if (type == "image") 
+		{
             ctx.drawImage(this.image, 
                 this.x, 
                 this.y,
                 this.width, this.height);
-        } else {
+        } 
+		else 
+		{
             ctx.fillStyle = color;
             ctx.fillRect(this.x, this.y, this.width, this.height);
         }
@@ -72,27 +101,127 @@ function component(width, height, color, x, y, type)
         this.gravitySpeed += this.gravity;
         this.x += this.speedX;
         this.y += this.speedY + this.gravitySpeed;
-        this.WcisnijKlawisz();
+        this.hitBottom();
     }
-    this.WcisnijKlawisz = function() 
+    this.hitBottom = function() 
 	{
-        var dno = ArenaRozgrywki.canvas.height - this.height;
+        var dno = myJumpGameArea.canvas.height - this.height;
         if (this.y > dno) 
 		{
             this.y = dno;
             this.gravitySpeed = 0;
         }
     }
+	this.crashWith = function(otherobj) 
+	{
+        var myleft = this.x;
+        var myright = this.x + (this.width);
+        var mytop = this.y;
+        var mybottom = this.y + (this.height);
+        var otherleft = otherobj.x;
+        var otherright = otherobj.x + (otherobj.width);
+        var othertop = otherobj.y;
+        var otherbottom = otherobj.y + (otherobj.height);
+        var crash = true;
+        if ((mybottom < othertop) ||
+               (mytop > otherbottom) ||
+               (myright < otherleft) ||
+               (myleft > otherright)) 
+		{
+           crash = false;
+        }
+        return crash;
+    }
 }
-function AktualizacjaArenyRozgrywki() 
+/* Obsługa plików muzycznych - background/hitsound */
+function sound(src) 
 {
-    ArenaRozgrywki.clear();
-	MalyProblem.update();
-	KontenerGry.speedX = 0;
-    KontenerGry.speedY = 0; 
-    if (ArenaRozgrywki.key && ArenaRozgrywki.key == 32) {KontenerGry.speedY = -3.5; } //sterowanie za pomocą spacji
-	myBackground.newPos(); 
-    myBackground.update();
-    KontenerGry.newPos();
-    KontenerGry.update();
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "auto");
+    this.sound.setAttribute("controls", "none");
+    this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+    this.play = function()
+	{
+        this.sound.play();
+    }
+    this.stop = function()
+	{
+        this.sound.pause();
+    }    
 }
+
+/* Funkcja odpowiedzialna za: czestotliwość, szybkość poruszania się, wielkość generowanych przeszkód,
+odtwarzanie / stopowanie muzyki po uderzeniu w pszeszkodę, wyświetlanie scoreboard, nowe pozycje obiektów,
+obsługę sterowania za pomocą spacji, zliczanie klatek oraz postępu gry */
+
+function everyInterval(n) 
+{
+    if ((myJumpGameArea.frameNumber / n) % 1 == 0)
+		{
+		return true;
+		}
+    return false;
+}
+
+function updateGameArea() 
+{
+    var x, y;
+    for (i = 0; i < myObstacles.length; i += 1) 
+	{
+        if (myJumpGameSection.crashWith(myObstacles[i])) 
+		{
+			myHitSound.play();
+			myBackgroundMusic.stop();
+            myJumpGameArea.stop();
+            document.getElementById("scoreboard").style.display = "flex";
+            return;
+        } 
+    }
+    myJumpGameArea.clear();
+    myJumpGameArea.frameNumber += 1;
+    if (myJumpGameArea.frameNumber == 1 || everyInterval(50)) //co jaki czas przeszkoda // modyfikacja do HardRock'a
+	{
+        x = myJumpGameArea.canvas.width;
+        y = myJumpGameArea.canvas.height - 40 // modyfikacja do HardRock'a
+        myObstacles.push(new component(10, 200, "yellow", x, y)); // modyfikacja do HardRock'a oraz Hidden'a
+    }
+    for (i = 0; i < myObstacles.length; i += 1) 
+	{
+        myObstacles[i].x += -10; //predkość mapy // modyfikacja do DoubleTime'a
+        myObstacles[i].update();
+    }
+	myJumpGameSection.speedX = 0;
+    myJumpGameSection.speedY = 0; 
+	//sterowanie za pomocą spacji kod 32
+    if (myJumpGameArea.key && myJumpGameArea.key == 32) 
+	{
+		myJumpGameSection.speedY = -4.5; //predkość wznoszenia sie
+	} 
+    myJumpGameSection.newPos(); 
+    myJumpGameSection.update();
+	myBackgroundMusic.play();
+}
+
+/* MODYFIKACJE + INNE */
+/* 
+DoubleTime - Zwiekszona predkość mapy - mnożnik score * 1.15.
+HardRock - Zwiekszenie ilości przeszkód oraz ich wysokosci i szerokości - mnożnik score * 1.20.
+Hidden - Przeszkody pokazują się na chwilę po czym znikają - mnożnik score * 1.25.
+
+Długość gry:
+Czas muzyki w sekundach * ilość klatek na sek = czas gry.
+PĘTLA + SCOREBOARD
+
+Szanse:
+3 Życia plus bonusy:
+1: mnoznik score * 1.1;
+2: mnoznik score * 1.2;
+3: mnoznik score * 1.3;
+
+INFORMACJA:
+BONUSY Z MODYFIKACJI I ZYCIA ŁACZĄ SIĘ :) MAX score * 1.80
+*/
+
+
