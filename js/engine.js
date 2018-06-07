@@ -9,7 +9,10 @@ var myScore;
 function restartJumpGame() 
 {
 	document.getElementById("scoreboard").style.display = "none";
+	document.getElementById("scoreboard-win").style.display = "none";
 	myJumpGameArea.stop();
+	myWinnerAplauseSound.stop();
+	myBackgroundMusic.stop(); //tuuuuuuuuuuu
 	myJumpGameArea.clear();
 	myJumpGameArea = {};
 	myJumpGameSection = {};
@@ -17,6 +20,7 @@ function restartJumpGame()
 	myHitSound = {};
 	myBackgroundMusic = {};
 	myScore = {};
+	framess = {};
 	document.getElementById("canvasUnit").innerHTML = "";
 	startJumpGame()
 }
@@ -27,10 +31,10 @@ function startJumpGame()
 	myJumpGameArea = new gameArea();
 	myJumpGameSection = new component(64, 64, "img/char.gif", 50, 240, "image");
 	myScore = new component("20px", "Consolas", "white", 10, 20, "text");
+	framess = new component("20px", "Consolas", "white", 200, 20, "text");
 	myHitSound = new sound("sounds/hitObstacle.mp3");
 	myWinnerAplauseSound = new sound("sounds/winnerAplauseSound.mp3");
 	myBackgroundMusic = new sound("sounds/relaxingBackgroundMusic.mp3");
-    myBackgroundMusic.play();
     myJumpGameArea.start();
 }
 
@@ -46,7 +50,7 @@ function gameArea()
     this.frameNumber = 0;
     this.start = function() 
 	{
-        this.interval = setInterval(updateGameArea, 10); //ilość klatek defautl: 20
+        this.interval = setInterval(updateGameArea, 5); //ilość klatek defautl: 20 ;; 38760 dla 5
 		window.addEventListener('keydown', function (e) //sterowanie za pomocą klawiatury
 		{
             myJumpGameArea.key = e.keyCode;
@@ -65,22 +69,6 @@ function gameArea()
 	{
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
-}
-
-/*Progress bar map escape*/
-function move() {
-  var elem = document.getElementById("myBar");   
-  var width = 0;
-  var id = setInterval(frame, 1);
-  function frame() {
-    if (width >= 20000) {
-      clearInterval(id);
-    } else {
-      width++; 
-      elem.style.width = width/200 + '%'; 
-      elem.innerHTML = width * 1/200  + '%';
-    }
-  }
 }
 
 /* Tworzenie elementów składowych gry */
@@ -209,39 +197,53 @@ function updateGameArea()
             document.getElementById("scoreboard").style.display = "flex";
             return;
         } 
+		/*Jeżeli wynik osiagnie 20000 punktów - przeszedłeś grę na 100% bez uderzenia w przeszkodę*/
+		if ( myScore.score == 38400) 
+		{
+			myBackgroundMusic.stop();
+			myWinnerAplauseSound.play();
+			myJumpGameArea.stop();
+			document.getElementById("scoreboard-win").style.display = "flex";
+			return;
+		} 
     }
+	
     myJumpGameArea.clear();
     myJumpGameArea.frameNumber += 1;
 	myScore.score +=1;
     if (myJumpGameArea.frameNumber == 1 || everyInterval(150)) //co jaki czas przeszkoda // modyfikacja do HardRock'a
 	{
         x = myJumpGameArea.canvas.width;
-        y = myJumpGameArea.canvas.height - 40; // modyfikacja do HardRock'a default 40 // do sprawdzenia warunku wygranej (-1)
-        myObstacles.push(new component(10, 200, "yellow", x, y)); // modyfikacja do HardRock'a oraz Hidden'a
+        y = myJumpGameArea.canvas.height - 70; // modyfikacja do HardRock'a default 70 // do sprawdzenia warunku wygranej (-1)
+        myObstacles.push(new component(45, 83, "img/spikes.png", x, y, "image"));
     }
     for (i = 0; i < myObstacles.length; i += 1) 
 	{
-        myObstacles[i].x += -5; //predkość mapy // modyfikacja do DoubleTime'a
+		//if(myScore.score < 19850){ // myJumpGameArea.frameNumber < 1000 // znikanie przeszkód
+        myObstacles[i].x += -3; //predkość mapy // modyfikacja do DoubleTime'a
         myObstacles[i].update();
+		//}
+		//myObstacles[i].update();
     }
+	
+	/* Dane w grze: */
+	framess.text="PROGRESS: " + (Math.round(myScore.score / 384 * 100) / 100) + "%";
+	framess.update();
 	myScore.text="SCORE: " + myScore.score;        
-    myScore.update();        
+    myScore.update();
+	
+	/* Aktualizacja paska postepu */
+	document.getElementById("myBar").style.width = myScore.score/384 + '%';
+	
 	myJumpGameSection.speedX = 0;
     myJumpGameSection.speedY = 0; 
+	
 	/* sterowanie za pomocą spacji kod 32 */
     if (myJumpGameArea.key && myJumpGameArea.key == 32) 
 	{
-		myJumpGameSection.speedY = -4.5; //predkość wznoszenia sie
+		myJumpGameSection.speedY = -6; //predkość wznoszenia sie
 	} 
-	/*Jeżeli wynik osiagnie 20000 punktów - przeszedłeś grę na 100% bez uderzenia w przeszkodę*/
-	if ( myScore.score == 20000) 
-	{
-		myBackgroundMusic.stop();
-        myJumpGameArea.stop();
-		myWinnerAplauseSound.play();
-        document.getElementById("scoreboard-win").style.display = "flex";
-        return;
-	} 
+	
     myJumpGameSection.newPos(); 
     myJumpGameSection.update();
 	myBackgroundMusic.play();
@@ -252,10 +254,6 @@ function updateGameArea()
 DoubleTime - Zwiekszona predkość mapy - mnożnik score * 1.15.
 HardRock - Zwiekszenie ilości przeszkód oraz ich wysokosci i szerokości - mnożnik score * 1.20.
 Hidden - Przeszkody pokazują się na chwilę po czym znikają - mnożnik score * 1.25.
-
-Długość gry:
-Czas muzyki w sekundach * ilość klatek na sek = czas gry.
-PĘTLA + SCOREBOARD
 
 Szanse:
 3 Życia plus bonusy:
