@@ -4,6 +4,7 @@ Planuje stworzyć grę podobną do T-Rex Game od Chrome. Motywem mojej gry bedzi
 
 
 Gra do sprawdzenia:
+
 Wersja 0.
 http://keyftplog.esy.es/wer0/jumpgame.html
 
