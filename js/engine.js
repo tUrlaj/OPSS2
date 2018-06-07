@@ -4,6 +4,7 @@ var myObstacles = [];
 var myHitSound;
 var myBackgroundMusic;
 var myScore;
+var life = 1000;
 
 /* Wczytywanie nowej gry po przegranej */
 function restartJumpGame() 
@@ -20,7 +21,9 @@ function restartJumpGame()
 	myHitSound = {};
 	myBackgroundMusic = {};
 	myScore = {};
-	framess = {};
+	life = 1000;
+	myFrames = {};
+	myLifes = {};
 	document.getElementById("canvasUnit").innerHTML = "";
 	startJumpGame()
 }
@@ -31,7 +34,8 @@ function startJumpGame()
 	myJumpGameArea = new gameArea();
 	myJumpGameSection = new component(64, 64, "img/char.gif", 50, 240, "image");
 	myScore = new component("20px", "Consolas", "white", 10, 20, "text");
-	framess = new component("20px", "Consolas", "white", 200, 20, "text");
+	myFrames = new component("20px", "Consolas", "white", 185, 20, "text");
+	myLifes = new component("20px", "Consolas", "white", 460, 20, "text");
 	myHitSound = new sound("sounds/hitObstacle.mp3");
 	myWinnerAplauseSound = new sound("sounds/winnerAplauseSound.mp3");
 	myBackgroundMusic = new sound("sounds/relaxingBackgroundMusic.mp3");
@@ -152,6 +156,7 @@ function component(width, height, color, x, y, type)
         return crash;
     }
 }
+
 /* Obsługa plików muzycznych - background/hitsound */
 function sound(src) 
 {
@@ -174,7 +179,6 @@ function sound(src)
 /* Funkcja odpowiedzialna za: czestotliwość, szybkość poruszania się, wielkość generowanych przeszkód,
 odtwarzanie / stopowanie muzyki po uderzeniu w pszeszkodę, wyświetlanie scoreboard, nowe pozycje obiektów,
 obsługę sterowania za pomocą spacji, zliczanie klatek oraz postępu gry */
-
 function everyInterval(n) 
 {
     if ((myJumpGameArea.frameNumber / n) % 1 == 0)
@@ -189,15 +193,23 @@ function updateGameArea()
     var x, y;
     for (i = 0; i < myObstacles.length; i += 1) 
 	{
-        if (myJumpGameSection.crashWith(myObstacles[i])) 
+		if (myJumpGameSection.crashWith(myObstacles[i])) 
 		{
-			myHitSound.play();
-			myBackgroundMusic.stop();
-            myJumpGameArea.stop();
-            document.getElementById("scoreboard").style.display = "flex";
-            return;
+			if(life > 0)
+			{
+				life -= 1;
+			}
+			else
+			{
+				myHitSound.play();
+				myBackgroundMusic.stop();
+				myJumpGameArea.stop();
+				document.getElementById("scoreboard").style.display = "flex";
+				return;
+			}
         } 
-		/*Jeżeli wynik osiagnie 20000 punktów - przeszedłeś grę na 100% bez uderzenia w przeszkodę*/
+
+		/* Jeżeli wynik osiagnie 38400 punktów - przeszedłeś grę na 100% */
 		if ( myScore.score == 38400) 
 		{
 			myBackgroundMusic.stop();
@@ -226,11 +238,13 @@ function updateGameArea()
 		//myObstacles[i].update();
     }
 	
-	/* Dane w grze: */
-	framess.text="PROGRESS: " + (Math.round(myScore.score / 384 * 100) / 100) + "%";
-	framess.update();
+	/* HUB: */
+	myFrames.text="PROGRESS: " + (Math.round(myScore.score / 384 * 100) / 100) + "%";
+	myFrames.update();
 	myScore.text="SCORE: " + myScore.score;        
     myScore.update();
+	myLifes.text="LIFE: " + life + "/1000";        
+    myLifes.update();
 	
 	/* Aktualizacja paska postepu */
 	document.getElementById("myBar").style.width = myScore.score/384 + '%';
