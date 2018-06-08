@@ -24,6 +24,9 @@ http://keyftplog.esy.es/wer4/jumpgame.html
 Wersja 5.
 http://keyftplog.esy.es/wer5/jumpgame.html
 
+Wersja 5 ZOPTYMALIZOWANA.
+http://keyftplog.esy.es/opt5/jumpgame.html
+
 Bez optymalizacji:
 ![alt text](http://keyftplog.esy.es/bez%20opt.JPG)
 
