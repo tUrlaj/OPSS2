@@ -7,16 +7,19 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	</head>
 <body onload="startJumpGame()" onselectstart="return false" onselect="return false" oncopy="return false">
-  <div id="myBar"></div>
+<div id="myProgress">
+	<div id="myBar"></div>
+	<div id="myHP"></div>
+ </div>
 <div id="scoreboard">
-	<h1 id="status">PORAŻKA!</br></h1>
-	<h2 id="score">Wynik: 999,999</h2>
+	<h1 id="status"></h1>
+	<h2 id="score"></h2>
 	<a id="reset" onclick="restartJumpGame()">> Replay! <</a>
 	<a id="reset" onclick="">> Strona główna <</a>
 </div>
 <div id="scoreboard-win">
-	<h1 id="status">WYGRANA!</br></h1>
-	<h2 id="score">Wynik: 999,999</h2>
+	<h1 id="status-win"></h1>
+	<h2 id="score-win"></h2>
 	<a id="reset" onclick="restartJumpGame()">> Replay! <</a>
 	<a id="reset" onclick="">> Strona główna <</a>
 </div>

@@ -16,17 +16,23 @@ canvas {
 
 #myProgress {
   width: 100%;
-  background-color: #ddd;
 }
 
 #myBar {
-  width: 0%;
-  height: 3px;
-  background-color: #4CAF50;
-  text-align: center;
-  margin: auto:
-  line-height: 30px;
-  color: red;
+	position: absolute;
+	height: 4.5px;
+	background-color: #4CAF50;
+	text-align: center;
+}
+
+#myHP {
+	position: absolute;
+	background-image: url('../img/scorebar-hp-colour.png');
+	background-size: 100% 100%;
+	width: 50%;
+	top:4.5px;
+	height: 10px;
+	text-align: center;
 }
 
 #scoreboard {
@@ -53,7 +59,26 @@ canvas {
 	color: #fff;
 	font-family: sans-serif;
 }
+
+#status-win {
+	position: absolute;
+    text-align: center;
+    width: 100%;
+	margin-top: 10%;
+	color: #fff;
+	font-family: sans-serif;
+}
+
 #score {
+	position: absolute;
+    text-align: center;
+    width: 100%;
+	margin-top: 20%;
+	color: #fff;
+	font-family: sans-serif;
+}
+
+#score-win {
 	position: absolute;
     text-align: center;
     width: 100%;

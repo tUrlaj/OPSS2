@@ -5,6 +5,11 @@ var myHitSound;
 var myBackgroundMusic;
 var myScore;
 var life = 1000;
+var scoreMultiplerByHP = 1;
+var scoreMultiplerByMODS = 0;
+var DT = 1;
+var HR = 1;
+var HD = 1;
 
 /* Wczytywanie nowej gry po przegranej */
 function restartJumpGame() 
@@ -22,6 +27,12 @@ function restartJumpGame()
 	myBackgroundMusic = {};
 	myScore = {};
 	life = 1000;
+	scoreMultiplerByHP = 1;
+	scoreMultiplerByMODS = 0;
+	/* jezeli button resetuj mody*/
+	//DT = 0;
+	//HR = 0;
+	//HD = 0;
 	myFrames = {};
 	myLifes = {};
 	document.getElementById("canvasUnit").innerHTML = "";
@@ -33,9 +44,9 @@ function startJumpGame()
 {
 	myJumpGameArea = new gameArea();
 	myJumpGameSection = new component(64, 64, "img/char.gif", 50, 240, "image");
-	myScore = new component("20px", "Consolas", "white", 10, 20, "text");
-	myFrames = new component("20px", "Consolas", "white", 185, 20, "text");
-	myLifes = new component("20px", "Consolas", "white", 460, 20, "text");
+	myScore = new component("20px", "Consolas", "white", 10, 50, "text");
+	myFrames = new component("20px", "Consolas", "white", 185, 32, "text");
+	myLifes = new component("20px", "Consolas", "white", 410, 32, "text");
 	myHitSound = new sound("sounds/hitObstacle.mp3");
 	myWinnerAplauseSound = new sound("sounds/winnerAplauseSound.mp3");
 	myBackgroundMusic = new sound("sounds/relaxingBackgroundMusic.mp3");
@@ -89,7 +100,7 @@ function component(width, height, color, x, y, type)
 		this.text = new Text();
         this.text = color;
     }
-    this.score = 0; //wynik początkowy // domyślnie 0 // do sprawdzenia warunku wygranej 19000
+    this.score = 0; //wynik początkowy // domyślnie 0 // do sprawdzenia warunku wygranej 38000
     this.width = width;
     this.height = height;
     this.x = x;
@@ -193,29 +204,34 @@ function updateGameArea()
     var x, y;
     for (i = 0; i < myObstacles.length; i += 1) 
 	{
-		if (myJumpGameSection.crashWith(myObstacles[i])) 
+		if (myJumpGameSection.crashWith(myObstacles[i])) //po uderzeniu w przeszkode odejmij x hp ponizej 0 zakoncz gre
 		{
 			if(life > 0)
 			{
-				life -= 1;
+				life -= 2; // dodanie losowości 
 			}
 			else
 			{
+				/* Jeśli zycie spadnie do 0 pkt wyswietlany informacje o przegranej*/
 				myHitSound.play();
 				myBackgroundMusic.stop();
 				myJumpGameArea.stop();
 				document.getElementById("scoreboard").style.display = "flex";
+				document.getElementById("status").innerHTML = "PORAŻKA!";
+				document.getElementById("score").innerHTML = "Twój całkowity wynik to: " + myScore.score * (scoreMultiplerByHP + scoreMultiplerByMODS);
 				return;
 			}
         } 
 
-		/* Jeżeli wynik osiagnie 38400 punktów - przeszedłeś grę na 100% */
+		/* Jeżeli wynik osiagnie 38400 punktów wyswietlamy informacje o wygranej */
 		if ( myScore.score == 38400) 
 		{
 			myBackgroundMusic.stop();
 			myWinnerAplauseSound.play();
 			myJumpGameArea.stop();
 			document.getElementById("scoreboard-win").style.display = "flex";
+			document.getElementById("status-win").innerHTML = "WYGRANA!";
+			document.getElementById("score-win").innerHTML = "Twój całkowity wynik to: " + myScore.score * (scoreMultiplerByHP + scoreMultiplerByMODS);
 			return;
 		} 
     }
@@ -238,16 +254,36 @@ function updateGameArea()
 		//myObstacles[i].update();
     }
 	
+	/* Mnoznik pkt dla punktów życia */
+	if(life == 1000){scoreMultiplerByHP = 1.6}
+	if(life <= 950){scoreMultiplerByHP = 1.5}
+	if(life <= 900){scoreMultiplerByHP = 1.4}
+	if(life <= 600){scoreMultiplerByHP = 1.3}
+	if(life <= 400){scoreMultiplerByHP = 1.2}
+	if(life <= 200){scoreMultiplerByHP = 1.1}
+	if(life == 0){scoreMultiplerByHP = 1}
+	/* Mnoznik pkt dla pojedyńczych modyfikacji */
+	if(DT == 1){scoreMultiplerByMODS = 0.10}
+	if(HR == 1){scoreMultiplerByMODS = 0.15}
+	if(HD == 1){scoreMultiplerByMODS = 0.25}
+	/* Mnoznik pkt dla wielu modyfikacji */
+	if(DT == 1 && HR == 1){scoreMultiplerByMODS = 0.25}
+	if(DT == 1 && HD == 1){scoreMultiplerByMODS = 0.35}
+	if(HD == 1 && HR == 1){scoreMultiplerByMODS = 0.40}
+	if(DT == 1 && HD == 1 && HR == 1){scoreMultiplerByMODS = 0.50}
+	
+	
 	/* HUB: */
 	myFrames.text="PROGRESS: " + (Math.round(myScore.score / 384 * 100) / 100) + "%";
 	myFrames.update();
-	myScore.text="SCORE: " + myScore.score;        
+	myScore.text="SCORE: " + myScore.score + "*" + scoreMultiplerByHP + "*" + scoreMultiplerByMODS;        
     myScore.update();
 	myLifes.text="LIFE: " + life + "/1000";        
     myLifes.update();
 	
 	/* Aktualizacja paska postepu */
 	document.getElementById("myBar").style.width = myScore.score/384 + '%';
+	document.getElementById("myHP").style.width = life/25 + '%';
 	
 	myJumpGameSection.speedX = 0;
     myJumpGameSection.speedY = 0; 
@@ -262,21 +298,5 @@ function updateGameArea()
     myJumpGameSection.update();
 	myBackgroundMusic.play();
 }
-
-/* MODYFIKACJE + INNE */
-/* 
-DoubleTime - Zwiekszona predkość mapy - mnożnik score * 1.15.
-HardRock - Zwiekszenie ilości przeszkód oraz ich wysokosci i szerokości - mnożnik score * 1.20.
-Hidden - Przeszkody pokazują się na chwilę po czym znikają - mnożnik score * 1.25.
-
-Szanse:
-3 Życia plus bonusy:
-1: mnoznik score * 1.1;
-2: mnoznik score * 1.2;
-3: mnoznik score * 1.3;
-
-INFORMACJA:
-BONUSY Z MODYFIKACJI I ZYCIA ŁACZĄ SIĘ :) MAX score * 1.80
-*/
 
 
