@@ -17,5 +17,9 @@ http://keyftplog.esy.es/wer2/jumpgame.html
 Wersja 3.
 http://keyftplog.esy.es/wer3/jumpgame.html
 
+Wersja 4.
+http://keyftplog.esy.es/wer4/jumpgame.html
+
+
 
 
