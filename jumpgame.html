@@ -6,22 +6,44 @@
 		<script src="js/engine.js" type="text/javascript"></script>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	</head>
-<body onload="startJumpGame()" onselectstart="return false" onselect="return false" oncopy="return false">
+<body onselectstart="return false" onselect="return false" oncopy="return false">
+<!-- Wyświetlane przed grą -->
+<div id="home-mods">
+<h1 id="info-mods">Modyfikacje:</h1>
+<form id="form" name="form1">
+<label title="Mnożnik punktów: x1.10" class="container">DoubleTime
+<input type="checkbox" value="1" name="dt">
+ <span class="checkmark1"></span>
+</label>
+<label title="Mnożnik punktów: x1.15" class="container">HardRock
+<input type="checkbox" value="1" name="hr">
+ <span class="checkmark2"></span>
+</label>
+<label title="Mnożnik punktów: x1.25" class="container">Hidden
+<input type="checkbox" value="1" name="hd">
+ <span class="checkmark3"></span>
+</label>
+</form>
+<a id="reset" onclick="checkbox()">Zapisz modyfikacje!</a>
+<a id="reset" onclick="startJumpGame();checkbox">Strona główna</a>
+</div>
+<!-- Wyświetlane podczas gry -->
 <div id="myProgress">
 	<div id="myBar"></div>
 	<div id="myHP"></div>
  </div>
+ <!-- Wyświetlane w przypadku przegranej oraz przejścia gry -->
 <div id="scoreboard">
 	<h1 id="status"></h1>
 	<h2 id="score"></h2>
 	<a id="reset" onclick="restartJumpGame()">> Replay! <</a>
-	<a id="reset" onclick="">> Strona główna <</a>
+	<a id="reset" href="jumpgame.html">> Strona główna <</a>
 </div>
 <div id="scoreboard-win">
 	<h1 id="status-win"></h1>
 	<h2 id="score-win"></h2>
 	<a id="reset" onclick="restartJumpGame()">> Replay! <</a>
-	<a id="reset" onclick="">> Strona główna <</a>
+	<a id="reset" href="jumpgame.html">> Strona główna <</a>
 </div>
 <div id="canvasUnit">
 </div>

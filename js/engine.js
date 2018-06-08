@@ -7,9 +7,9 @@ var myScore;
 var life = 1000;
 var scoreMultiplerByHP = 1;
 var scoreMultiplerByMODS = 0;
-var DT = 1;
-var HR = 1;
-var HD = 1;
+var DT = 0;
+var HR = 0;
+var HD = 0;
 
 /* Wczytywanie nowej gry po przegranej */
 function restartJumpGame() 
@@ -29,10 +29,6 @@ function restartJumpGame()
 	life = 1000;
 	scoreMultiplerByHP = 1;
 	scoreMultiplerByMODS = 0;
-	/* jezeli button resetuj mody*/
-	//DT = 0;
-	//HR = 0;
-	//HD = 0;
 	myFrames = {};
 	myLifes = {};
 	document.getElementById("canvasUnit").innerHTML = "";
@@ -42,6 +38,9 @@ function restartJumpGame()
 /* Deklaracje obiektów */
 function startJumpGame() 
 {
+	document.getElementById("myBar").style.display = "flex";
+	document.getElementById("myHP").style.display = "flex";
+	document.getElementById("home-mods").style.display = "none";
 	myJumpGameArea = new gameArea();
 	myJumpGameSection = new component(64, 64, "img/char.gif", 50, 240, "image");
 	myScore = new component("20px", "Consolas", "white", 10, 50, "text");
@@ -199,6 +198,34 @@ function everyInterval(n)
     return false;
 }
 
+function checkbox()
+{
+	if(document.forms.form1.dt.checked==true)
+	{
+		DT = 1;
+	}
+	else
+	{
+		DT = 0;
+	}
+	if(document.forms.form1.hr.checked==true)
+	{
+		HR = 1;
+	}
+	else
+	{
+		HR = 0;
+	}
+	if(document.forms.form1.hd.checked==true)
+	{
+		HD = 1;
+	}
+	else
+	{
+		HD = 0;
+	}
+}
+
 function updateGameArea() 
 {
     var x, y;
@@ -253,6 +280,7 @@ function updateGameArea()
 		//}
 		//myObstacles[i].update();
     }
+	
 	
 	/* Mnoznik pkt dla punktów życia */
 	if(life == 1000){scoreMultiplerByHP = 1.6}
