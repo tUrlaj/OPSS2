@@ -2,6 +2,7 @@
 
 Planuje stworzyć grę podobną do T-Rex Game od Chrome. Motywem mojej gry bedzie Anime oraz pomysły zaczerpniete z gry pod nazwą "Osu!game / std"
 
+![alt text](http://www.skipser.com/test/trex-game/promotion/trex-chrome-game.png)
 
 Gra do sprawdzenia:
 
@@ -23,5 +24,10 @@ http://keyftplog.esy.es/wer4/jumpgame.html
 Wersja 5.
 http://keyftplog.esy.es/wer5/jumpgame.html
 
+Bez optymalizacji:
+![alt text](http://keyftplog.esy.es/bez%20opt.JPG)
 
+Z optymalizacją:
+![alt text](http://keyftplog.esy.es/z%20opt.JPG)
 
+P.S. Optymalizacja dot. wersji 5 :) 
