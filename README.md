@@ -4,6 +4,9 @@ Planuje stworzyć grę podobną do T-Rex Game od Chrome. Motywem mojej gry bedzi
 
 ![alt text](http://www.skipser.com/test/trex-game/promotion/trex-chrome-game.png)
 
+Wersja 6.
+http://keyftplog.esy.es/wer6/index.html
+
 Gra do sprawdzenia:
 
 Wersja 0.
