@@ -3,43 +3,47 @@
 	<head>
 		<title>Anime Jump Game 6.0</title>
 		<link rel="stylesheet" type="text/css" href="css/style.css">
+		<!-- Async ładowanie js - przyspieszenie -->
 		<script async src="js/engine.js"></script>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	</head>
 <body onselectstart="return false" onselect="return false" oncopy="return false">
-<!-- Wyświetlane przed grą -->
+<!-- Wyświetlane przed grą: display flex -> none-->
 <div id="home-mods">
 <h1 id="info-mods">Modyfikacje:</h1>
-<form id="form" name="form1">
-<label title="Mnożnik punktów: x1.10" class="container">DoubleTime
-<input type="checkbox" value="1" name="dt">
+<form id="form" name="mods">
+<label title="Przyśpieszenie tempa! Mnożnik punktów: x1.10!" class="container">DoubleTime
+<input type="checkbox" name="dt">
  <span class="checkmark1"></span>
 </label>
-<label title="Mnożnik punktów: x1.15" class="container">HardRock
-<input type="checkbox" value="1" name="hr">
+<label title="Losowość przeszkód! Mnożnik punktów: x1.15!" class="container">HardRock
+<input type="checkbox" name="hr">
  <span class="checkmark2"></span>
 </label>
+<label title="Jedno uderzenie, jeden trup!" class="container">SuddenDeath
+<input type="checkbox" name="sd">
+ <span class="checkmark3"></span>
+</label>
 </form>
-<a id="reset" onclick="checkbox()">Zapisz modyfikacje!</a>
-<a id="reset" onclick="startJumpGame();checkbox">Zagraj!</a>
+<a id="reset" onclick="startJumpGame()">Zagraj!</a>
 </div>
-<!-- Wyświetlane podczas gry -->
+<!-- Wyświetlane podczas gry: display none -> flex -->
 <div id="myProgress">
 	<div id="myBar"></div>
 	<div id="myHP"></div>
  </div>
- <!-- Wyświetlane w przypadku przegranej oraz przejścia gry -->
+ <!-- Wyświetlane w przypadku przegranej oraz przejścia gry: display none -> flex -->
 <div id="scoreboard">
 	<h1 id="status"></h1>
 	<h2 id="score"></h2>
-	<a id="reset" onclick="restartJumpGame()">> Replay! <</a>
-	<a id="reset" href="index.html">> Strona główna <</a>
+	<a id="reset" onclick="restartJumpGame()">> Zagraj ponownie! <</a>
+	<a id="reset" href="index.html">> Strona startowa! <</a>
 </div>
 <div id="scoreboard-win">
 	<h1 id="status-win"></h1>
 	<h2 id="score-win"></h2>
-	<a id="reset" onclick="restartJumpGame()">> Replay! <</a>
-	<a id="reset" href="index.html">> Strona główna <</a>
+	<a id="reset" onclick="restartJumpGame()">> Zagraj ponownie! <</a>
+	<a id="reset" href="index.html">> Strona startowa! <</a>
 </div>
 <div id="canvasUnit">
 </div>
